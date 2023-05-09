@@ -18,6 +18,19 @@ int main() {
         proc[i].pid = i+1;
         printf("\n");
     }
+    
+    int j;
+    Process temp;
+    for (i=1; i<n; i++) {
+        temp = proc[i];
+        j = i-1;
+        while (j>=0 && proc[j].at > temp.at) {
+            proc[j+1] = proc[j];
+            j--;
+        }
+        proc[j] = temp;
+    }
+    
     int current_time=0;
     for (i=0; i<n; i++) {
         current_time = current_time > proc[i].at? current_time : proc[i].at;
