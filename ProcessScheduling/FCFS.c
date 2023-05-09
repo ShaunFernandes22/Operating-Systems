@@ -28,7 +28,7 @@ int main() {
             proc[j+1] = proc[j];
             j--;
         }
-        proc[j] = temp;
+        proc[j+1] = temp;
     }
     
     int current_time=0;
