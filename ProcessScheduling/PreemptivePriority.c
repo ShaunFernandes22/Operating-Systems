@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include <stdbool.h>
 
+// preemptive priority
 typedef struct {
-    int art, brt, pr, start; 
+    int pid, art, brt, pr, start, ct, rt, tat, wt; 
 } Process;
 
-int tat[10], wt[10], rt[10], ct[10];
 
 int main() {
     Process proc[10];
@@ -17,10 +17,11 @@ int main() {
     {
         printf("Enter the arrival and burst time and Priority of Process %d : ",i+1);
         scanf("%d %d %d",&proc[i].art,&proc[i].brt,&proc[i].pr);
+        proc[i].pid = i+1;
     }
     
     for (i=0; i<n; i++)
-    rt[i] = proc[i].brt;
+        proc[i].rt = proc[i].brt;
     
     int t = 0, high_pr = -1, complete = 0, index;
     bool inQ = false;
@@ -29,53 +30,51 @@ int main() {
     {
         for (i=0; i<n; i++)
         {
-            if (proc[i].art <= t && proc[i].pr > high_pr && rt[i] > 0)
+            if (proc[i].art <= t && proc[i].pr > high_pr && proc[i].rt > 0)
             {
                 index = i;
                 high_pr = proc[i].pr;
                 inQ = true;
             }
         }
-            if (proc[i].brt == rt[i])
-            {
-                proc[i].start = t;
+            if (proc[index].brt == proc[index].rt){
+                proc[index].start = t;
             }
-        
-            if (inQ == false)
-            {
+            if (inQ == false) {
                 t++;
                 continue;
             }    
             
-            rt[index]--;
+            proc[index].rt--;
             t++;
             
-            if (rt[index] == 0)
+            if (proc[index].rt == 0)
             {
-                complete++;
-                ct[index] = t;
-                inQ = false;
+                proc[index].ct = t;
                 high_pr = -1;
+                complete++;
+                inQ = false;
             }    
     }
     
     for (i =0;i<n;i++)    
     {
-        tat[i] = ct[i] - proc[i].art;
-        wt[i] = tat[i] - proc[i].brt;
-        total_tat += tat[i];
-        total_wt += wt[i];
+        proc[i].tat = proc[i].ct - proc[i].art;
+        proc[i].wt = proc[i].tat - proc[i].brt;
+        total_tat += proc[i].tat;
+        total_wt += proc[i].wt;
     }
     printf("PID \t ARR \t BRR \t PRI \t CT \t TAT \t WT \n");
     for (i =0;i<n;i++)    
     {
-        printf(" %d \t\t %d \t\t %d \t\t %d \t\t%d\t\t%d\t\t%d\n", i+1, proc[i].art, proc[i].brt, proc[i].pr, ct[i], tat[i], wt[i]);
+        printf(" %d \t\t %d \t\t %d \t\t %d \t\t%d\t\t%d\t\t%d\n",proc[i].pid, proc[i].art, proc[i].brt, proc[i].pr, proc[i].ct, proc[i].tat, proc[i].wt);
     }
+    printf("\n");
     for(int i=0; i<n; i++){
-        printf("%d....P%d....%d\n", proc[i].start, i+1,ct[i]);
+        printf("%d....P%d....%d\n",proc[i].start, proc[i].pid ,proc[i].ct);
     }
-    printf("The average turnaround time is %f \n",total_tat/(float)n);
-    printf("The average waiting time is %f \n",total_wt/(float)n);
+    printf("The average turnaround time is %.2f \n",total_tat/(float)n);
+    printf("The average waiting time is %.2f \n",total_wt/(float)n);
     
     return 0;
 }
