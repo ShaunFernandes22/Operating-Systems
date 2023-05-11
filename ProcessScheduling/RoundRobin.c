@@ -113,15 +113,16 @@ int main() {
                 proc[i].in_q = 1;
             }
         }
-        // if queue is empty we increment time
-        if (isEmpty()) {
-            t++;
-        }
         // index is queued behind again only after processes till time - t have arrived
         if (index != -1 && proc[index].rt > 0) {
             enqueue(index);
             proc[index].in_q = 1;
         }
+        // if queue is empty we increment time
+        if (isEmpty()) {
+            t++;
+        }
+        
     }    
     
     for (i=0; i<n; i++) {
