@@ -2,7 +2,7 @@
 #define MAX 20
 
 typedef struct {
-    int pid, at, bt, start, ct, rt, tat, wt, in_q;
+    int pid, at, bt, start, ct, rt, tat, wt, in_q, resp_t;
 } Process;
 
 // Queue control ----
@@ -53,8 +53,9 @@ int isEmpty() {
 int main() {
     Process proc[10];
     Process temp;
-    int i, n, j, t_qu;
+    int i, n, j, t_qu, gan_ct=0;
     float total_tat = 0, total_wt = 0;
+    int gantt[20], c_gantt[20];
     printf("Enter the number of processes : ");
     scanf("%d",&n);
     printf("Enter the time quantum : ");
@@ -105,6 +106,9 @@ int main() {
                 t += t_qu;
                 proc[index].rt -= t_qu;
             }
+            gantt[gan_ct] = proc[index].pid;
+            c_gantt[gan_ct] = t;
+            gan_ct++;
         }
         // we search for new processes that have not yet arrived
         for (i=0; i<n; i++) {
@@ -128,18 +132,27 @@ int main() {
     for (i=0; i<n; i++) {
         proc[i].tat = proc[i].ct - proc[i].at;
         proc[i].wt = proc[i].tat - proc[i].bt;
+        proc[i].resp_t = proc[i].start - proc[i].at;
         
         total_tat += proc[i].tat;
         total_wt += proc[i].wt;
     }
     
-    printf("PID\tART\tBRT\tCT\tTAT\tWT\n");
+    printf("\nPID\tART\tBRT\tST\tCT\tTAT\tWT\tRT\n");
     for (i=0; i<n; i++) {
-        printf("P%d\t%d\t%d\t%d\t%d\t%d\n",proc[i].pid, proc[i].at, proc[i].bt,  proc[i].ct, proc[i].tat, proc[i].wt);
+        printf("P%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n",proc[i].pid, proc[i].at, proc[i].bt, proc[i].start, proc[i].ct, proc[i].tat, proc[i].wt, proc[i].resp_t);
             
     }
-    printf("Average Turnaround Time : %.2f \n",total_tat/n);
+    printf("\nAverage Turnaround Time : %.2f \n",total_tat/n);
     printf("Average Waiting Time : %.2f \n",total_wt/n);
     
+    printf("Gantt chart : \n");
+    for (i =0; i<gan_ct; i++) {
+        printf("P%d\t",gantt[i]);
+    }
+    printf("\n");
+    for (i=0; i< gan_ct; i++) {
+        printf("%d \t",c_gantt[i]);
+    }
     return 0;
 }
