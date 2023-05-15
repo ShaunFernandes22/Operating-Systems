@@ -55,7 +55,7 @@ int main() {
     Process temp;
     int i, n, j, t_qu, gan_ct=0;
     float total_tat = 0, total_wt = 0;
-    int gantt[20], c_gantt[20];
+    int gantt[20], c_gantt[20], s_gantt[20];
     printf("Enter the number of processes : ");
     scanf("%d",&n);
     printf("Enter the time quantum : ");
@@ -90,9 +90,9 @@ int main() {
 
         if (!isEmpty()) {
             index = dequeue(); // q front is processed
-    
             proc[index].in_q = 1; // prevents being selected in for loop below 
-
+            s_gantt[gan_ct] = t;
+    
             if (proc[index].bt == proc[index].rt) {
                 proc[index].start = t;
             }
@@ -146,13 +146,8 @@ int main() {
     printf("\nAverage Turnaround Time : %.2f \n",total_tat/n);
     printf("Average Waiting Time : %.2f \n",total_wt/n);
     
-    printf("Gantt chart : \n");
-    for (i =0; i<gan_ct; i++) {
-        printf("P%d\t",gantt[i]);
-    }
-    printf("\n");
-    for (i=0; i< gan_ct; i++) {
-        printf("%d \t",c_gantt[i]);
-    }
+    printf("\n\nGantt chart : \n");
+   for (i=0; i<gan_ct; i++)
+    printf("%d --- P%d --- %d\n", s_gantt[i], gantt[i], c_gantt[i]);
     return 0;
 }
